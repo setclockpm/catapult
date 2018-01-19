@@ -7,5 +7,5 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 
-breed = Breed.create(title: "Wash laundry")
-breed.tags << [Tag.create(title: "Today")]
+breed = Breed.create(name: "American Bobtail")
+breed.tags << [Tag.create(name: "affectionate"), Tag.create(name: "low shedding")]
