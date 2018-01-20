@@ -2,7 +2,7 @@ class Tag < ApplicationRecord
   has_many :taggings
   has_many :breeds, through: :taggings
   
-  validates :title, presence: true
+  validates :name, presence: true
   
   
   def self.filtered(query)

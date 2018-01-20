@@ -1,4 +1,4 @@
-module Api  
+module Api
   module V1
     class BreedsController < ApplicationController
 
@@ -10,6 +10,10 @@ module Api
         @breed ||= Breed.new
         @breed.attributes = breed_attributes
         save_breed(status: :created) or render_error
+      end
+      
+      def show
+        load_breed_with_tags
       end
       
       # Looked into how nested attributes work and looks like it's still being discussed often
@@ -29,6 +33,10 @@ module Api
     
     
       private
+        
+        def load_breed
+          @breed = Breed.find(params[:id])
+        end
         
         def load_breed
           @breed = Breed.find(params[:id])

@@ -8,14 +8,14 @@ RSpec.describe Breed, type: :model do
   
   describe "A breed record" do
     context "without tags" do
-      it "is invalid without a title" do
-        breed = Breed.new(title: nil)
+      it "is invalid without a name" do
+        breed = Breed.new(name: nil)
         breed.valid?
-        expect(breed.errors[:title]).to include("can't be blank")
+        expect(breed.errors[:name]).to include("can't be blank")
       end
   
-      it "is valid when created with a title" do
-        breed = Breed.new(title: "Moon Walk")
+      it "is valid when created with a name" do
+        breed = Breed.new(name: "Scottish Fold")
         expect(breed).to be_valid
       end
     end
@@ -25,8 +25,8 @@ RSpec.describe Breed, type: :model do
     context "with tags" do
       it "is valid" do
         breed = FactoryGirl.create(:breed)
-        tag1 = breed.tags.create!(title: "Optional")
-        tag2 = breed.tags.create!(title: "Zen")
+        tag1 = breed.tags.create!(name: "Intelligent")
+        tag2 = breed.tags.create!(name: "Zen")
         expect(breed.reload.tags.size).to eq(2)
       end
     end

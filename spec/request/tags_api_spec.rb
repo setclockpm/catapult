@@ -6,7 +6,7 @@ RSpec.describe "Tags API", type: :request do
     # make HTTP get request before each example
     before do
       FactoryGirl.create(:tag)
-      FactoryGirl.create(:tag, title: 'Shopping')
+      FactoryGirl.create(:tag, name: 'Climbs Trees')
       get api_v1_tags_path
     end
     
@@ -22,10 +22,10 @@ RSpec.describe "Tags API", type: :request do
     
     context 'with search parameter' do
       before do
-        FactoryGirl.create(:tag, title: 'Music')
-        FactoryGirl.create(:tag, title: 'Leisure')
-        FactoryGirl.create(:tag, title: 'Mandatory')
-        FactoryGirl.create(:tag, title: 'Unmandatory')
+        FactoryGirl.create(:tag, name: 'Playful')
+        FactoryGirl.create(:tag, name: 'Plays Piano')
+        FactoryGirl.create(:tag, name: 'Independent')
+        FactoryGirl.create(:tag, name: 'Loyal')
       end
       
       it 'returns status code 200' do
@@ -46,19 +46,19 @@ RSpec.describe "Tags API", type: :request do
       end
       
       it "will return all matching tags when a search parameter is passed" do
-        get api_v1_tags_path(q: 'Man')
+        get api_v1_tags_path(q: 'Pla')
         json = JSON.parse(response.body)
         expect(json["data"].length).to eq 2
       end
       
       it "will return all matching tags when a search parameter is passed" do
-        get api_v1_tags_path(q: 'ory')
+        get api_v1_tags_path(q: 'yal')
         json = JSON.parse(response.body)
-        expect(json["data"].length).to eq 2
+        expect(json["data"].length).to eq 1
       end
       
       it "will return all matching tags when a search parameter is passed" do
-        get api_v1_tags_path(q: 'Musicmanship')
+        get api_v1_tags_path(q: 'Gambler')
         json = JSON.parse(response.body)
         expect(json["data"].length).to eq 0
       end
@@ -88,7 +88,7 @@ RSpec.describe "Tags API", type: :request do
   
   
   describe "POST /tags" do
-    let(:valid_attributes) { { data: { type: 'undefined', id: 'undefined', attributes: { title: "Someday" } } } }
+    let(:valid_attributes) { { data: { type: 'undefined', id: 'undefined', attributes: { name: "Diva" } } } }
 
    #
     context 'when the request is valid' do
@@ -96,7 +96,7 @@ RSpec.describe "Tags API", type: :request do
 
       it 'creates a tag' do
         attributes = JSON.parse(response.body)["data"]["attributes"]
-        expect(attributes["title"]).to eq('Someday')
+        expect(attributes["name"]).to eq('Likes Water')
       end
 
       it 'returns status code 201' do
@@ -116,7 +116,7 @@ RSpec.describe "Tags API", type: :request do
 
       it 'returns a validation failure message' do
         json = JSON.parse(response.body)
-        expect(json['title'][0]).to match(/can't be blank/)
+        expect(json['name'][0]).to match(/can't be blank/)
       end
     end
 
@@ -127,17 +127,17 @@ RSpec.describe "Tags API", type: :request do
   
   describe "PATCH /tags" do
     
-    let(:valid_attributes) { { data: { type: 'tag', id: '1', attributes: { title: "Updated Tag Title" } } } }
+    let(:valid_attributes) { { data: { type: 'tag', id: '1', attributes: { name: "Updated Tag Title" } } } }
     
     context 'when the request is valid' do
       before do
-        tag = FactoryGirl.create(:tag, title: 'Outdoor')
+        tag = FactoryGirl.create(:tag, name: 'Outdoor')
         patch api_v1_tag_path(tag), params: valid_attributes 
       end
 
       it 'updates a tag' do
         attributes = JSON.parse(response.body)["data"]["attributes"]
-        expect(attributes["title"]).to eq('Updated Tag Title')
+        expect(attributes["name"]).to eq('Updated Tag Title')
       end
       ``
       it 'has a response code of 200' do
@@ -149,8 +149,8 @@ RSpec.describe "Tags API", type: :request do
 
     context 'when the request is invalid' do
       before do
-        tag = FactoryGirl.create(:tag, title: 'Outdoor')
-        patch api_v1_tag_path(tag), { params: { data: { type: 'tag', id: '1', attributes: { title: nil } } } }
+        tag = FactoryGirl.create(:tag, name: 'Outdoor')
+        patch api_v1_tag_path(tag), { params: { data: { type: 'tag', id: '1', attributes: { name: nil } } } }
       end
 
       it 'returns status code 422' do
@@ -159,7 +159,7 @@ RSpec.describe "Tags API", type: :request do
 
       it 'returns a validation failure message' do
         json = JSON.parse(response.body)
-        expect(json['title'][0]).to match(/can't be blank/)
+        expect(json['name'][0]).to match(/can't be blank/)
       end
     end
     

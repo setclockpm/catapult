@@ -6,8 +6,8 @@ RSpec.describe "Breeds API", type: :request do
     # make HTTP get request before each example
     before do
       FactoryGirl.create(:breed_with_tags, tags_count: 1)
-      FactoryGirl.create(:breed, title: 'Play ocarina')
-      FactoryGirl.create(:breed, title: 'Go to the gym')
+      FactoryGirl.create(:breed, name: 'Tabby')
+      FactoryGirl.create(:breed, name: 'Cymric')
       get api_v1_breeds_path
     end
     
@@ -29,7 +29,7 @@ RSpec.describe "Breeds API", type: :request do
   
   
   describe "POST /breeds" do
-    let(:valid_attributes) { { data: { type: 'undefined', id: 'undefined', attributes: { title: "Do Homework" } } } }
+    let(:valid_attributes) { { data: { type: 'undefined', id: 'undefined', attributes: { name: "Persian" } } } }
 
    #
     context 'when the request is valid' do
@@ -37,7 +37,7 @@ RSpec.describe "Breeds API", type: :request do
 
       it 'creates a breed' do
         attributes = JSON.parse(response.body)["data"]["attributes"]
-        expect(attributes["title"]).to eq('Do Homework')
+        expect(attributes["name"]).to eq('Persian')
       end
 
       it 'returns status code 201' do
@@ -57,7 +57,7 @@ RSpec.describe "Breeds API", type: :request do
 
       it 'returns a validation failure message' do
         json = JSON.parse(response.body)
-        expect(json['title'][0]).to match(/can't be blank/)
+        expect(json['name'][0]).to match(/can't be blank/)
       end
     end
 
@@ -70,24 +70,24 @@ RSpec.describe "Breeds API", type: :request do
 
   
   describe "PATCH /breeds" do
-    let(:valid_attrs_with_tags) { { data: { type: 'breeds', id: '1', attributes: { title: "Updated Breed Title", tags: ["Urgent", "Home"] } } } }
-    let(:valid_attrs_empty_tags) { { data: { type: 'breeds', id: '1', attributes: { title: "Updated Breed Title", tags: [] } } } }
-    let(:valid_attrs_blank_tags) { { data: { type: 'breeds', id: '1', attributes: { title: "Updated Breed Title", tags: nil } } } }
-    let(:valid_attributes) { { data: { type: 'breeds', id: '1', attributes: { title: "Updated Title" } } } }
+    let(:valid_attrs_with_tags) { { data: { type: 'breeds', id: '1', attributes:  { name: "Bengal", tags: ["fussy", "fast"] } } } }
+    let(:valid_attrs_empty_tags) { { data: { type: 'breeds', id: '1', attributes: { name: "Bengal", tags: [] } } } }
+    let(:valid_attrs_blank_tags) { { data: { type: 'breeds', id: '1', attributes: { name: "Bengal", tags: nil } } } }
+    let(:valid_attributes) { { data: { type: 'breeds', id: '1', attributes: { name: "Bengal" } } } }
     
    #
     context 'when the request is valid' do
       
       context "with tags parameters" do
         before do
-          breed = FactoryGirl.create(:breed, title: 'Play ocarina')
+          breed = FactoryGirl.create(:breed, name: 'Ragdoll')
           patch api_v1_breed_path(breed), params: valid_attrs_with_tags 
         end
 
         it 'updates a breed' do
           json       = JSON.parse(response.body)
           attributes = json["data"]["attributes"]
-          expect(attributes["title"]).to eq('Updated Breed Title')
+          expect(attributes["name"]).to eq('Sphynx')
           expect(json["included"].size).to eq(2)
         end
 
@@ -98,14 +98,14 @@ RSpec.describe "Breeds API", type: :request do
       
       context "with nil as the tags parameter" do
         before do
-          breed = FactoryGirl.create(:breed, title: 'Play ocarina')
+          breed = FactoryGirl.create(:breed, name: 'Ragdoll')
           patch api_v1_breed_path(breed), params: valid_attrs_blank_tags
         end
 
         it 'updates a breed' do
           json       = JSON.parse(response.body)
           attributes = json["data"]["attributes"]
-          expect(attributes["title"]).to eq('Updated Breed Title')
+          expect(attributes["name"]).to eq('Maine Coon')
           expect(json["included"]).to eq(nil)
         end
 
@@ -113,14 +113,14 @@ RSpec.describe "Breeds API", type: :request do
       
       context "with empty array as the tags parameter" do
         before do
-          breed = FactoryGirl.create(:breed, title: 'Play ocarina')
+          breed = FactoryGirl.create(:breed, name: 'Ragdoll')
           patch api_v1_breed_path(breed), params: valid_attrs_empty_tags
         end
 
         it 'updates a breed' do
           json       = JSON.parse(response.body)
           attributes = json["data"]["attributes"]
-          expect(attributes["title"]).to eq('Updated Breed Title')
+          expect(attributes["name"]).to eq('British Shorthair')
           expect(json["included"]).to eq(nil)
         end
 
@@ -128,13 +128,13 @@ RSpec.describe "Breeds API", type: :request do
       
       context 'w/o tag parameters' do
         before do
-          breed = FactoryGirl.create(:breed, title: 'Play ocarina')
+          breed = FactoryGirl.create(:breed, name: 'Russian Blue')
           patch api_v1_breed_path(breed), params: valid_attributes 
         end
 
         it 'updates a breed' do
           attributes = JSON.parse(response.body)["data"]["attributes"]
-          expect(attributes["title"]).to eq('Updated Title')
+          expect(attributes["name"]).to eq('Burmese')
         end
         ``
         it 'has a response code of 200' do
@@ -155,7 +155,7 @@ RSpec.describe "Breeds API", type: :request do
 
       it 'returns a validation failure message' do
         json = JSON.parse(response.body)
-        expect(json['title'][0]).to match(/can't be blank/)
+        expect(json['name'][0]).to match(/can't be blank/)
       end
     end
 

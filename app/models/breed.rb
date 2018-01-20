@@ -1,7 +1,7 @@
 class Breed < ApplicationRecord
   has_many :taggings
   has_many :tags, through: :taggings
-  validates :title, presence: true
+  validates :name, presence: true
   
   #accepts_nested_attributes_for :tags
   
@@ -20,7 +20,7 @@ class Breed < ApplicationRecord
   
     def add_tags
       tag_records = []
-      @tag_attributes.each {|tt| tag_records << Tag.find_or_create_by(title: tt) }
+      @tag_attributes.each {|tt| tag_records << Tag.find_or_create_by(name: tt) }
       self.tags << tag_records
     end
   
