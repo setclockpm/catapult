@@ -3,8 +3,16 @@ Rails.application.routes.draw do
   
   namespace :api do
     namespace :v1 do
-      resources :breeds, except: [:new, :edit]
-      resources :tags, except: [:new, :edit]
+      resources :tags, except: [:new, :edit] do
+        collection do
+          get :stats
+        end
+      end
+      resources :breeds, except: [:new, :edit] do
+        collection do
+          get :stats
+        end
+      end
     end
   end
 end

@@ -1,7 +1,7 @@
 FactoryGirl.define do
   
   factory :breed do
-    title 'Norwegian Forest Cat'
+    name 'Norwegian Forest Cat'
     
     transient do
       tags_count 2 # if details count is not given while creating job, 2 is taken as default count

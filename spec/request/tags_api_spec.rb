@@ -34,7 +34,6 @@ RSpec.describe "Tags API", type: :request do
     
       it "will return entire collection of tags (index) when search parameter is empty" do
         get api_v1_tags_path(q: nil)
-        puts Tag.all.inspect
         json = JSON.parse(response.body)
         expect(json["data"].length).to eq 6
       end
@@ -64,22 +63,11 @@ RSpec.describe "Tags API", type: :request do
       end
       
       it "will return all matching tags when a search parameter is passed" do
-        get api_v1_tags_path(q: 'Mandatory Music')
-        json = JSON.parse(response.body)
-        expect(json["data"].length).to eq 0
-      end
-      
-      it "will return all matching tags when a search parameter is passed" do
-        get api_v1_tags_path(q: 'm')
-        json = JSON.parse(response.body)
-        expect(json["data"].length).to eq 3
-      end
-      
-      it "will return all matching tags when a search parameter is passed" do
-        get api_v1_tags_path(q: 'MA')
+        get api_v1_tags_path(q: 'n')
         json = JSON.parse(response.body)
         expect(json["data"].length).to eq 2
       end
+      
 
     end
     
@@ -96,7 +84,7 @@ RSpec.describe "Tags API", type: :request do
 
       it 'creates a tag' do
         attributes = JSON.parse(response.body)["data"]["attributes"]
-        expect(attributes["name"]).to eq('Likes Water')
+        expect(attributes["name"]).to eq('Diva')
       end
 
       it 'returns status code 201' do
@@ -127,7 +115,7 @@ RSpec.describe "Tags API", type: :request do
   
   describe "PATCH /tags" do
     
-    let(:valid_attributes) { { data: { type: 'tag', id: '1', attributes: { name: "Updated Tag Title" } } } }
+    let(:valid_attributes) { { data: { type: 'tag', id: '1', attributes: { name: "Noisy" } } } }
     
     context 'when the request is valid' do
       before do
@@ -137,7 +125,7 @@ RSpec.describe "Tags API", type: :request do
 
       it 'updates a tag' do
         attributes = JSON.parse(response.body)["data"]["attributes"]
-        expect(attributes["name"]).to eq('Updated Tag Title')
+        expect(attributes["name"]).to eq('Noisy')
       end
       ``
       it 'has a response code of 200' do

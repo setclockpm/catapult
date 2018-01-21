@@ -6,7 +6,7 @@ class Tag < ApplicationRecord
   
   
   def self.filtered(query)
-    where("title LIKE :q", { q: "%#{query}%"})
+    where("name LIKE :q", { q: "%#{query}%"})
   end
   
   

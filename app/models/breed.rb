@@ -1,7 +1,7 @@
 class Breed < ApplicationRecord
-  has_many :taggings
+  has_many :taggings, dependent: :delete_all
   has_many :tags, through: :taggings
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: true
   
   #accepts_nested_attributes_for :tags
   
@@ -14,6 +14,11 @@ class Breed < ApplicationRecord
     return true if @tag_attributes.blank?
     add_tags
   end
+  
+  def replace_tags
+    return @tag_attributes.nil? || replace_tags
+  end
+  
   
   
   private

@@ -3,18 +3,25 @@ module Api
     class BreedsController < ApplicationController
 
       def index
+        render json: Breed.all
+      end
+      
+      def stats
         render json: Breed.includes(:tags), include: [:tags]
       end
+      
+      def show
+        #.where(id: params[:id])
+        render json: load_breed, include: [:tags]
+      end
+      
       
       def create
         @breed ||= Breed.new
         @breed.attributes = breed_attributes
-        save_breed(status: :created) or render_error
+        create_breed(status: :created) or render_error
       end
       
-      def show
-        load_breed_with_tags
-      end
       
       # Looked into how nested attributes work and looks like it's still being discussed often
       # https://stackoverflow.com/questions/32079897/serializing-deeply-nested-associations-with-active-model-serializers
@@ -37,18 +44,15 @@ module Api
         def load_breed
           @breed = Breed.find(params[:id])
         end
-        
-        def load_breed
-          @breed = Breed.find(params[:id])
-        end
+
         
         def render_error
           render json: @breed.errors, status: :unprocessable_entity
         end
         
-        def save_breed(params)
-          if @breed.save
-            render json: @breed, status: params[:status], location: api_v1_breed_url(@breed)
+        def create_breed(params)
+          if @breed.save && @breed.save_tags
+            render json: @breed, include: [:tags], status: params[:status], location: api_v1_breed_url(@breed)
           else
             false
           end
