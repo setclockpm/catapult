@@ -17,6 +17,8 @@ RSpec.describe "Breeds API", type: :request do
     it "will return collection of breeds (index)" do
       json = JSON.parse(response.body)
       expect(json.length).to eq 1 #data without included hash
+      puts "JSON: #{JSON.pretty_unparse(json)}\n\n"
+      
       expect(json['data'].length).to eq 3
     end
   end
@@ -47,8 +49,9 @@ RSpec.describe "Breeds API", type: :request do
   describe 'GET /breeds/stats' do
     before do
       FactoryGirl.create(:breed_with_tags, tags_count: 1)
-      FactoryGirl.create(:breed, name: 'Tabby')
       FactoryGirl.create(:breed, name: 'Cymric')
+      tabby = FactoryGirl.create(:breed, name: 'Tabby')
+      tabby.tags << [FactoryGirl.create(:tag, name: "stripy"), FactoryGirl.create(:tag, name: "kneads")]
       get stats_api_v1_breeds_path
     end
 
@@ -58,9 +61,8 @@ RSpec.describe "Breeds API", type: :request do
 
     it "will return collection of breeds (index)" do
       json = JSON.parse(response.body)
-      
-      expect(json.length).to eq 2 #data and include
       expect(json['data'].length).to eq 3
+      expect(json['data'].last['attributes']['tag_ids']).to eq [2,3] #[stript, kneads]
     end
 
   end
@@ -155,7 +157,6 @@ RSpec.describe "Breeds API", type: :request do
     end
 
   end
-
 
 
 

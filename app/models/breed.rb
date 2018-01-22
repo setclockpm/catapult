@@ -1,4 +1,6 @@
 class Breed < ApplicationRecord
+  # attr_accessor :stats_wanted
+ #  attr_reader :tag_count, :tag_ids
   # This is to trigger the callback in tagagings :)
   has_many :taggings, dependent: :destroy
   has_many :tags, through: :taggings
@@ -8,7 +10,6 @@ class Breed < ApplicationRecord
   def attributes=(attributes)
     attributes.delete(:id)
     attributes || {}
- 
     @tag_attributes = attributes.delete(:tags)
     super
   end
@@ -16,6 +17,14 @@ class Breed < ApplicationRecord
   def add_tags
     @tag_attributes.blank? || build_tags
   end
+  
+  # def tag_count
+#     tags.count
+#   end
+#
+#   def tag_ids
+#     tags.map(&:id)
+#   end
   
   def update_tags
     @tag_attributes.nil? || replace_tags

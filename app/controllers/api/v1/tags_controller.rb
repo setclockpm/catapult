@@ -3,28 +3,51 @@ module Api
     class TagsController < ApplicationController
 
       def index
-        render json: Tag.filtered(params[:q])
+        render json: load_breed ? @breed.tags : Tag.includes(:breeds)
       end
       
+      def stats
+        render json: Tag.includes(:breeds), fields: { breed: [:name]}, include: [:breeds], stats: true
+      end
+      
+      # This being called 'create' is misleading being that the tags of a breed are essentially being 
+      # replaced ... but I'm abiding by path given in the spec. 
+      # I probably woudl have made a custom route
       def create
-        @tag ||= Tag.new
-        @tag.attributes = tag_attributes
-        save_tag(status: :created) or render_error
+        if load_breed
+          update_breed_tags(status: nil)
+        else
+          render json: { breed: ["cannot be blank"]}, status: :unprocessable_entity
+        end
       end
       
-      # https://stackoverflow.com/questions/32079897/serializing-deeply-nested-associations-with-active-model-serializers
-      # https://github.com/rails-api/active_model_serializers/pull/1762
+      def show
+        render json: load_tag
+      end
+
+      
       def update
         load_tag
-        @tag.attributes = tag_attributes
+        @tag.attributes = tag_params
         save_tag(status: nil) or render_error
       end
     
+      def destroy
+        load_tag
+        @tag.destroy
+        head 204
+      end
+      
+    
     
       private
-        
         def load_tag
           @tag = Tag.find(params[:id])
+        end
+        
+        def load_breed
+          return false unless params[:breed_id]
+          @breed = Breed.find(params[:breed_id]) rescue nil
         end
         
         def render_error
@@ -39,15 +62,21 @@ module Api
           end
         end
         
+        def update_breed_tags(params)
+          puts "tag_params: #{tag_params.inspect}"
+          @breed.attributes = tag_params
+
+          if @breed.update_tags
+            render json: @breed.tags, status: params[:status], location: api_v1_breed_url(@breed)
+          else
+            render json: { breed: ["tags could not be updated"]}, status: :unprocessable_entity
+          end
+        end
+        
         def tag_params
           ActiveModelSerializers::Deserialization.jsonapi_parse(params)
         end
         
-        def tag_attributes
-          attributes = tag_params
-          attributes.delete(:id)# if @tag.new_record?
-          attributes || {}
-        end
         
     end
   end

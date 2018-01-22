@@ -3,11 +3,11 @@ module Api
     class BreedsController < ApplicationController
 
       def index
-        render json: Breed.all
+        render json: Breed.includes(:tags)
       end
       
       def stats
-        render json: Breed.includes(:tags), include: [:tags]
+        render json: Breed.includes(:tags), fields: { tag: [:name]}, include: [:tags], stats: true
       end
       
       def show
