@@ -1,5 +1,5 @@
 FactoryGirl.define do
   factory :tag do
-    name "agile"
+    name "artificial"
   end
 end

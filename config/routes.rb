@@ -12,6 +12,8 @@ Rails.application.routes.draw do
         collection do
           get :stats
         end
+        
+        resources :tags, only: [:index, :create]
       end
     end
   end

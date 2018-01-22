@@ -9,5 +9,8 @@ class Tag < ApplicationRecord
     where("name LIKE :q", { q: "%#{query}%"})
   end
   
+  def destroy_if_no_breed_associated
+    self.destroy if breeds.count == 0
+  end
   
 end
