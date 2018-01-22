@@ -6,7 +6,7 @@ require "rails_helper"
 RSpec.describe "Tags API", type: :request do
   
   describe 'GET /tags' do
-    # make HTTP get request before each example
+
     before do
       air_lynx_breed   = FactoryGirl.create(:breed, name: "Air Lynx")
       climbs_trees_tag = FactoryGirl.create(:tag, name: 'tree climber')

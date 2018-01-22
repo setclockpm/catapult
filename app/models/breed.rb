@@ -18,13 +18,6 @@ class Breed < ApplicationRecord
     @tag_attributes.blank? || build_tags
   end
   
-  # def tag_count
-#     tags.count
-#   end
-#
-#   def tag_ids
-#     tags.map(&:id)
-#   end
   
   def update_tags
     @tag_attributes.nil? || replace_tags
