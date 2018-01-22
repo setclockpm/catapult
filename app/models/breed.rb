@@ -1,6 +1,4 @@
 class Breed < ApplicationRecord
-  # attr_accessor :stats_wanted
- #  attr_reader :tag_count, :tag_ids
   # This is to trigger the callback in tagagings :)
   has_many :taggings, dependent: :destroy
   has_many :tags, through: :taggings
